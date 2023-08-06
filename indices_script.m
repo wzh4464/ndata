@@ -38,4 +38,4 @@ A = readCSR(data, indptr, indices, shape);
 A(1:7,:)
 
 % save A to file
-save('A.mat', 'A');
+save('A.mat', 'A', '-v7.3');
