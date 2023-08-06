@@ -1,18 +1,16 @@
 function S = readCSR(data, indptr, indices, shape)
 
 % data is value of each non-zero element
-% indptr give the column of each element
-% indices[i,i+1] give the part of indices that correspond to row i
+% indptr[i,i+1] give the part of indices that correspond to row i
+% indices give the column of each element
 % shape is the shape of the matrix
 % S is the sparse matrix: OUTPUT
 
-data_ptr = 1;
-IJ = zeros(length(data),2);
-for i = 1:shape(1)-1
-    for j = indptr(i):indptr(i+1)+1
-        IJ(data_ptr,:) = [i, indices(j)];
-        data_ptr = data_ptr + 1;
-    end
+% allocate memory for IJ
+IJ = zeros(length(data), 2, 'int64');
+
+for i = 1:shape(1)
+    IJ(indptr(i):indptr(i + 1) - 1, :) = [i .* ones(indptr(i + 1) - indptr(i), 1, 'int64'), indices(indptr(i):indptr(i + 1) - 1)'];
 end
 
 % numWorkers = 8;
