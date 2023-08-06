@@ -11,10 +11,13 @@
 # matlab to run `indices_script.m`
 
 # Path: /cm/shared/apps/maths/matlab/R2020b/bin/matlab
-OUTPUT=/home/zihanwu7/scratch/ndata/output.txt
+# OUTPUT=/home/zihanwu7/scratch/ndata/output.txt
+OUTPUT=/home/jeff/zihan/ndata/output.txt
 
-cd /home/zihanwu7/scratch/ndata/
-/cm/shared/apps/maths/matlab/R2020b/bin/matlab -nodisplay -nosplash -nodesktop -r "run('indices_script.m');exit;" >> $OUTPUT
+# cd /home/zihanwu7/scratch/ndata/
+# /cm/shared/apps/maths/matlab/R2020b/bin/matlab -nodisplay -nosplash -nodesktop -r "run('indices_script.m');exit;" >> $OUTPUT
+cd /home/jeff/zihan/ndata/
+/home/jeff/zihan/MATLAB/bin/matlab -nodisplay -nosplash -nodesktop -r "run('indices_script.m');exit;" >> $OUTPUT
 
 date >> $OUTPUT
 
