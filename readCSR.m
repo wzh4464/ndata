@@ -7,45 +7,23 @@ function S = readCSR(data, indptr, indices, shape)
 % S is the sparse matrix: OUTPUT
 
 % allocate memory for IJ
-IJ = zeros(length(data), 2, 'int64');
+% IJ = zeros(length(data), 2, 'int64');
 
-for i = 1:shape(1)
-    IJ(indptr(i):indptr(i + 1) - 1, :) = [i .* ones(indptr(i + 1) - indptr(i), 1, 'int64'), indices(indptr(i):indptr(i + 1) - 1)'];
-end
-
-% numWorkers = 8;
-% parpool(numWorkers);
-
-% spmd
-%     % Get the number of workers and the ID of this worker
-%     workerID = spmdIndex;
-
-%     % Compute the indices of the rows to process on this worker
-%     rowsPerWorker = ceil(length(indptr) / numWorkers);
-%     startRow = (workerID - 1) * rowsPerWorker + 1;
-%     endRow = min(workerID * rowsPerWorker, length(indptr));
-
-%     % Process the rows on this worker
-%     tempIJ = cell(endRow - startRow + 1, 1);
-
-%     for i = startRow:endRow
-%         temp = zeros(indptr(i + 1) - indptr(i), 2);
-%         k = 1;
-
-%         for j = indptr(i):indptr(i + 1) - 1
-%             temp(k, :) = [i, indices(j)];
-%             k = k + 1;
-%         end
-
-%         tempIJ{i - startRow + 1} = temp;
-%     end
-
-%     % Combine the results from all workers
-%     IJ = cat(1, tempIJ{:});
-%     IJ = spmdCat(IJ, 1, 1);
+% for i = 1:shape(1)
+%     IJ(indptr(i):indptr(i + 1) - 1, :) = [i .* ones(indptr(i + 1) - indptr(i), 1, 'int64'), indices(indptr(i):indptr(i + 1) - 1)'];
 % end
 
-% IJ = IJ{1};
+n = numel(indptr) - 1; % Number of rows
+row_counts = diff(indptr); % Number of nonzero elements in each row
+I = repelem((1:n)', row_counts); % Repeat row index for each nonzero element
+
+% Extract the column indices (J) using indptr
+J = arrayfun(@(startIdx, endIdx) indices(startIdx:endIdx - 1), indptr(1:end - 1), indptr(2:end), 'UniformOutput', false);
+J = cell2mat(J)';
+
+IJ = [I, J]; % Concatenate row and column indices
+
+% assert(isequal(IJ, IJ2), 'IJ and IJ2 are not equal');
 
 S = sparse(IJ(:,1), IJ(:,2), data, shape(1), shape(2), length(data));
 
