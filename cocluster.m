@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Saturday, 19th August 2023 12:04:36 pm
+%Last Modified: Saturday, 19th August 2023 1:03:08 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -35,7 +35,7 @@ batch_size = 10000;
 k = 10000;
 
 %% 
-tmpA = A(batch_size:batch_size*2-1, 1:batch_size);
+tmpA = A(1:batch_size, 1:batch_size);
 [U, S, V] = svds(tmpA, k);
 disp('k = ' + string(k))
 
