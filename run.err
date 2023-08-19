@@ -1,8 +1,0 @@
-{Index exceeds array bounds.
-
-Error in cocluster (line 38)
-tmpA = A(batch_size:batch_size*2-1, 1:batch_size);
-
-Error in run (line 91)
-evalin('caller', strcat(script, ';'));
-} 

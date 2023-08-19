@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Saturday, 19th August 2023 1:03:08 pm
+%Last Modified: Saturday, 19th August 2023 3:46:28 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -38,6 +38,8 @@ k = 10000;
 tmpA = A(1:batch_size, 1:batch_size);
 [U, S, V] = svds(tmpA, k);
 disp('k = ' + string(k))
+% disp first 20 S
+disp("S = ", diag(S(1:20, 1:20)))
 
 % title('Original Data');
 % subplot(1, 2, 1);
