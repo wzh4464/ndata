@@ -17,9 +17,8 @@ OUTPUT=/home/zihanwu7/scratch/cocluster_output.txt
 # OUTPUT=/home/jeff/zihan/ndata/cocluster_output.txt
 
 cd /home/zihanwu7/scratch/ndata/
-/cm/shared/apps/maths/matlab/R2020b/bin/matlab -nodisplay -nosplash -nodesktop -r "run('cocluster.m');exit;" > $OUTPUT
+/cm/shared/apps/maths/matlab/R2020b/bin/matlab -nosplash -nodesktop -r "run('cocluster.m');exit;" > $OUTPUT
 # cd /home/jeff/zihan/ndata/
 # /home/jeff/zihan/MATLAB/bin/matlab -nodisplay -nosplash -nodesktop -r "run('cocluster.m');exit;" >> $OUTPUT
 
-date
-
+date >> $OUTPUT

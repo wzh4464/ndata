@@ -3,12 +3,14 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Saturday, 19th August 2023 3:46:28 pm
+%Last Modified: Saturday, 19th August 2023 5:26:03 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
 %Date      		By	Comments
 %----------		---	---------------------------------------------------------
+%
+%19-08-232023	HPC disp('S = ' + string(diag(S(1:20, 1:20))))
 %}
 
 
@@ -39,19 +41,11 @@ tmpA = A(1:batch_size, 1:batch_size);
 [U, S, V] = svds(tmpA, k);
 disp('k = ' + string(k))
 % disp first 20 S
-disp("S = ", diag(S(1:20, 1:20)))
-
-% title('Original Data');
-% subplot(1, 2, 1);
-% plot3(U(:, 1), U(:, 2), U(:, 3), 'r.');
-% title('3D Row Space');
-% subplot(1, 2, 2);
-% plot3(V(:, 1), V(:, 2), V(:, 3), 'r.');
-% title('3D Column Space');
-
-% %% save the picture
-% saveas(gcf, 'co-cluster_batch_size_' + string(batch_size) + '_k_' + string(k) + '.png')
+disp('S = ' + string(diag(S(1:20, 1:20))))
 
 title('Singular Values');
-plot(diag(S), 'r.');
+plot(diag(S(1:500, 1:500)), 'r.');
 saveas(gcf, 'co-cluster_batch_size_' + string(batch_size) + '_k_' + string(k) + '_singular_values.png')
+
+% save s to txt
+dlmwrite('co-cluster_batch_size_' + string(batch_size) + '_k_' + string(k) + '_singular_values.txt', diag(S(1:500, 1:500)))
