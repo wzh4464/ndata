@@ -1,2 +1,0 @@
-/cm/local/apps/slurm/var/spool/job441127/slurm_script: line 17: 68106 Killed                  /cm/shared/apps/maths/matlab/R2020b/bin/matlab -nodisplay -nosplash -nodesktop -r "run('indices_script.m');exit;" >> $OUTPUT
-slurmstepd: error: Detected 1 oom_kill event in StepId=441127.batch. Some of the step tasks have been OOM Killed.
