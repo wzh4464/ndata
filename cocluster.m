@@ -3,49 +3,54 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Saturday, 19th August 2023 5:26:03 pm
+%Last Modified: Tuesday, 22nd August 2023 1:55:43 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
 %Date      		By	Comments
 %----------		---	---------------------------------------------------------
-%
-%19-08-232023	HPC disp('S = ' + string(diag(S(1:20, 1:20))))
 %}
 
+function [row_cluster, col_cluster] = cocluster(X, max_iter, tol)
+    % COCLUSTER Co-clustering algorithm
+    %   [row_cluster, col_cluster] = COCLUSTER(X, max_iter, tol, k)
+    %   performs co-clustering on the data matrix X. The
+    %   algorithm runs for at most max_iter iterations or until the objective
+    %   function changes by less than tol.
 
-%% 
-load('smallA.mat')
-A = smallA;
-clear smallA
+    [U, S, V] = svd(X);
+    % count singular values bigger than s_tol
+    s_tol = 1e-1;
+    s = diag(S);
+    s = s(s > s_tol);
+    k = length(s);
 
-%% 
-[m, n] = size(A);
+    % do k-means on U and V
+    U = U(:, 1:k);
+    V = V(:, 1:k);
+    [row_idx, row_cluster, row_dist, row_sumd] = kmeans(U, k);
+    [col_idx, col_cluster, col_dist, col_sumd] = kmeans(V, k);
 
-batch_size = 10000;
-% disp('batch_size =' + string(batch_size))
+    % initialize loss
+    %! WIP
+end
 
-%% shrink A to make n divisible by batch_size
-% n = floor(n/batch_size)*batch_size;
-% A = A(:, 1:n);
+function result = score(X, I, J)
+    % SCORE Compute the compatibility for submatrix X_IJ
+    %
+    %   X: the data matrix
+    %   I: the row cluster assignment; I is logical vector.
+    %   J: the column cluster assignment; J is logical vector.
 
-%%
-% M = m / batch_size;
-% N = n / batch_size;
+    lenI = sum(I);
+    lenJ = sum(J);
 
-%%
-k = 10000;
+    S1 = abs(corrcoef(X(I, J)) - eye(lenJ));
+    S2 = abs(corrcoef(X(I, J)') - eye(lenI));
 
-%% 
-tmpA = A(1:batch_size, 1:batch_size);
-[U, S, V] = svds(tmpA, k);
-disp('k = ' + string(k))
-% disp first 20 S
-disp('S = ' + string(diag(S(1:20, 1:20))))
+    result = min([scoreHelper(lenJ, S1), scoreHelper(lenI, S2)]);
+end
 
-title('Singular Values');
-plot(diag(S(1:500, 1:500)), 'r.');
-saveas(gcf, 'co-cluster_batch_size_' + string(batch_size) + '_k_' + string(k) + '_singular_values.png')
-
-% save s to txt
-dlmwrite('co-cluster_batch_size_' + string(batch_size) + '_k_' + string(k) + '_singular_values.txt', diag(S(1:500, 1:500)))
+function s = scoreHelper(length, C)
+    s = 1 - 1 / (length - 1) * sum(C);
+end
