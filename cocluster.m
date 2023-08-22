@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Tuesday, 22nd August 2023 1:55:43 pm
+%Last Modified: Tuesday, 22nd August 2023 8:59:13 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -17,8 +17,8 @@ function [row_cluster, col_cluster] = cocluster(X, max_iter, tol)
     %   performs co-clustering on the data matrix X. The
     %   algorithm runs for at most max_iter iterations or until the objective
     %   function changes by less than tol.
-
-    [U, S, V] = svd(X);
+ 
+    [U, S, V] = svdsketch(X);
     % count singular values bigger than s_tol
     s_tol = 1e-1;
     s = diag(S);
