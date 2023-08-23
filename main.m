@@ -25,18 +25,19 @@ A = mf.smallA(1:batch_size, :);
 %% ignore columns with all zeros and build the column map
 col_map = (sum(A, 1) ~= 0);
 A = A(:, col_map);
+size(A, 2)
 
 tic;
 [U, S, V] = svdsketch(A);
 toc;
 
 s = diag(S);
-stem(s(1:1000));
+stem(s);
 title('Singular Values');
 saveas(gcf, 'co-cluster_batch_size_' + string(batch_size)  + '_singular_values.png')
 
 % save s to txt
-writematrix(s(1:1000), 'co-cluster_batch_size_' + string(batch_size)  + '_singular_values.txt', 'Delimiter', ' ')
+writematrix(s, 'co-cluster_batch_size_' + string(batch_size)  + '_singular_values.txt', 'Delimiter', ' ')
 
 % save size(A) to txt
 writematrix(size(A), 'co-cluster_batch_size_' + string(batch_size)  + '_size_A.txt', 'Delimiter', ' ')
