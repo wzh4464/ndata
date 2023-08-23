@@ -39,3 +39,5 @@ octave-workspace
 *.npy
 *.npz
 *.mat
+*.txt
+*.png
