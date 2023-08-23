@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Wednesday, 23rd August 2023 4:42:03 pm
+%Last Modified: Wednesday, 23rd August 2023 6:01:30 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -11,7 +11,7 @@
 %----------		---	---------------------------------------------------------
 %}
 
-function [row_cluster, col_cluster] = cocluster(X, k, k2)
+function [row_cluster, col_cluster] = cocluster(X, scale, k)
     % COCLUSTER Co-clustering algorithm
     %   [row_cluster, col_cluster] = COCLUSTER(X, max_iter, tol, k)
     %   performs co-clustering on the data matrix X. The
@@ -20,20 +20,20 @@ function [row_cluster, col_cluster] = cocluster(X, k, k2)
     tic;
     [U, S, V] = svdsketch(X);
     toc; fprintf('for svd\n');
-    % count singular values bigger than s_tol
-    % s_tol = 1e-1;
-    % s = diag(S);
-    % s = s(1:k);
 
+    % save U, S, V
+    tic;
+    save('result/svd.mat', 'U', 'S', 'V', '-v7.3');
+    toc; fprintf('for save\n');
 
     % do k-means on U and V
-    U = U(:, 1:k);
-    V = V(:, 1:k);
+    U = U(:, 1:scale);
+    V = V(:, 1:scale);
     tic;
-    [row_idx, row_cluster, row_dist, row_sumd] = kmeans(U, k2);
+    [row_idx, row_cluster, row_dist, row_sumd] = kmeans(U, k);
     toc; fprintf('for row\n');
     tic;
-    [col_idx, col_cluster, col_dist, col_sumd] = kmeans(V, k2);
+    [col_idx, col_cluster, col_dist, col_sumd] = kmeans(V, k);
     toc; fprintf('for col\n');
 
     % compute I,J for each cluster
@@ -60,6 +60,7 @@ function [row_cluster, col_cluster] = cocluster(X, k, k2)
     %         scoreMatrix(i, j) = score(X, I(i, :), J(j, :));
     %     end
     % end
+    disp('begin busy');
     [Igrid, Jgrid] = meshgrid(1:k);
     scoreMatrix = arrayfun(@(i, j) score(X, I(i, :), J(j, :)), Igrid, Jgrid);
 
