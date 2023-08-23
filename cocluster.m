@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Wednesday, 23rd August 2023 6:01:30 pm
+%Last Modified: Wednesday, 23rd August 2023 10:59:21 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -52,17 +52,19 @@ function [row_cluster, col_cluster] = cocluster(X, scale, k)
     linearIndices = sub2ind([k, numel(col_idx)], col_idx, 1:numel(col_idx));
     J(linearIndices) = true;
 
-    % scoreMatrix = zeros(k, k);
-
-    % for i = 1:k
-    %     for j = 1:k
-    %         % compute score for each submatrix
-    %         scoreMatrix(i, j) = score(X, I(i, :), J(j, :));
-    %     end
-    % end
+    scoreMatrix = zeros(k, k);
     disp('begin busy');
-    [Igrid, Jgrid] = meshgrid(1:k);
-    scoreMatrix = arrayfun(@(i, j) score(X, I(i, :), J(j, :)), Igrid, Jgrid);
+    feature('numcores')
+    parpool(feature('numcores'));
+    parfor i = 1:k
+        for j = 1:k
+            % compute score for each submatrix
+            scoreMatrix(i, j) = score(X, I(i, :), J(j, :));
+        end
+    end
+
+    % [Igrid, Jgrid] = meshgrid(1:k);
+    % scoreMatrix = arrayfun(@(i, j) score(X, I(i, :), J(j, :)), Igrid, Jgrid);
 
     % save scoreMatrix
     save('result/scoreMatrix.mat', 'scoreMatrix', '-v7.3');

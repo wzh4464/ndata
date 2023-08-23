@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Wednesday, 23rd August 2023 4:42:21 pm
+%Last Modified: Wednesday, 23rd August 2023 10:51:07 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -17,7 +17,7 @@
 
 %% Load the matfile
 tic;
-mf = matfile('smallA.mat');
+mf = matfile('data/smallA.mat');
 [m, n] = size(mf, 'smallA');
 toc;
 % load first 10000 lines of smallA without loading the whole file to memory
