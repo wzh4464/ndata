@@ -41,3 +41,5 @@ octave-workspace
 *.mat
 *.txt
 *.png
+*.err
+*.out

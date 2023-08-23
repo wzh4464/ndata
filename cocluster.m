@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Wednesday, 23rd August 2023 3:55:51 pm
+%Last Modified: Wednesday, 23rd August 2023 4:42:03 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -11,7 +11,7 @@
 %----------		---	---------------------------------------------------------
 %}
 
-function [row_cluster, col_cluster] = cocluster(X, k)
+function [row_cluster, col_cluster] = cocluster(X, k, k2)
     % COCLUSTER Co-clustering algorithm
     %   [row_cluster, col_cluster] = COCLUSTER(X, max_iter, tol, k)
     %   performs co-clustering on the data matrix X. The
@@ -30,10 +30,10 @@ function [row_cluster, col_cluster] = cocluster(X, k)
     U = U(:, 1:k);
     V = V(:, 1:k);
     tic;
-    [row_idx, row_cluster, row_dist, row_sumd] = kmeans(U, k);
+    [row_idx, row_cluster, row_dist, row_sumd] = kmeans(U, k2);
     toc; fprintf('for row\n');
     tic;
-    [col_idx, col_cluster, col_dist, col_sumd] = kmeans(V, k);
+    [col_idx, col_cluster, col_dist, col_sumd] = kmeans(V, k2);
     toc; fprintf('for col\n');
 
     % compute I,J for each cluster
@@ -52,7 +52,7 @@ function [row_cluster, col_cluster] = cocluster(X, k)
     linearIndices = sub2ind([k, numel(col_idx)], col_idx, 1:numel(col_idx));
     J(linearIndices) = true;
 
-    scoreMatrix = zeros(k, k);
+    % scoreMatrix = zeros(k, k);
 
     % for i = 1:k
     %     for j = 1:k
@@ -61,7 +61,7 @@ function [row_cluster, col_cluster] = cocluster(X, k)
     %     end
     % end
     [Igrid, Jgrid] = meshgrid(1:k);
-    scoreMatrix = arrayfun(@(i, j) score_mex(X, I(i, :), J(j, :)), Igrid, Jgrid);
+    scoreMatrix = arrayfun(@(i, j) score(X, I(i, :), J(j, :)), Igrid, Jgrid);
 
     % save scoreMatrix
     save('result/scoreMatrix.mat', 'scoreMatrix', '-v7.3');
