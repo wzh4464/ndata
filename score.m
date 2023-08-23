@@ -7,12 +7,15 @@ function result = score(X, I, J)
     
     % I = logical(I);
     % J = logical(J);
+    numericI = find(I);
+    numericJ = find(J);
+    % subset = X(numericI, numericJ);
 
     lenI = sum(I);
     lenJ = sum(J);
 
-    S1 = abs(corrcoef(X(I, J)) - eye(lenJ));
-    S2 = abs(corrcoef(X(I, J)') - eye(lenI));
+    S1 = abs(corrcoef(X(numericI, numericJ)) - eye(lenJ));
+    S2 = abs(corrcoef(X(numericI, numericJ)') - eye(lenI));
 
     result = min([scoreHelper(lenJ, S1), scoreHelper(lenI, S2)]);
 end
