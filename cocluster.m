@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Wednesday, 23rd August 2023 10:59:21 pm
+%Last Modified: Thursday, 24th August 2023 1:19:29 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -17,24 +17,31 @@ function [row_cluster, col_cluster] = cocluster(X, scale, k)
     %   performs co-clustering on the data matrix X. The
     %   algorithm runs for at most max_iter iterations or until the objective
     %   function changes by less than tol.
+
+    fprintf('begin cocluster\n');
+
     tic;
-    [U, S, V] = svdsketch(X);
+    [U, ~, V] = svds(X, scale);
     toc; fprintf('for svd\n');
 
     % save U, S, V
-    tic;
-    save('result/svd.mat', 'U', 'S', 'V', '-v7.3');
-    toc; fprintf('for save\n');
+    % tic;
+    % save('result/svd.mat', 'U', 'S', 'V', '-v7.3');
+    % toc; fprintf('for save\n');
 
     % do k-means on U and V
-    U = U(:, 1:scale);
-    V = V(:, 1:scale);
+    % U = U(:, 1:scale);
+    % V = V(:, 1:scale);
     tic;
     [row_idx, row_cluster, row_dist, row_sumd] = kmeans(U, k);
     toc; fprintf('for row\n');
     tic;
     [col_idx, col_cluster, col_dist, col_sumd] = kmeans(V, k);
     toc; fprintf('for col\n');
+
+    % save row_idx, row_cluster, row_dist, row_sumd, col_idx, col_cluster, col_dist, col_sumd
+    save('result/kmeans.mat', 'row_idx', 'row_cluster', 'row_dist', 'row_sumd', 'col_idx', 'col_cluster', 'col_dist', 'col_sumd', '-v7.3');
+    fprintf('for save kmeans result\n');
 
     % compute I,J for each cluster
     % for i = 1:k
@@ -54,14 +61,30 @@ function [row_cluster, col_cluster] = cocluster(X, scale, k)
 
     scoreMatrix = zeros(k, k);
     disp('begin busy');
-    feature('numcores')
-    parpool(feature('numcores'));
-    parfor i = 1:k
-        for j = 1:k
-            % compute score for each submatrix
-            scoreMatrix(i, j) = score(X, I(i, :), J(j, :));
+    % open a file 'result/scoreMatrix.txt'
+    try
+        fid = fopen('result/scoreMatrix.txt', 'w');
+        feature('numcores')
+        parpool(feature('numcores'));
+        parfor i = 1:k
+            for j = 1:k
+                % compute score for each submatrix
+                scoreMatrix(i, j) = score(X, I(i, :), J(j, :));
+                fprintf(fid, '%d %d %f\n', i, j, scoreMatrix(i, j));
+            end
         end
+    % two kind of error:
+    % 1. file related error;
+    % 2. parallel related error;
+    catch ME
+        fclose(fid); % close the file
+        delete(gcp('nocreate')); % close the parallel pool
+        save('result/scoreMatrix.mat', 'scoreMatrix', '-v7.3');
+        save('result/function.mat');
+        rethrow(ME); % rethrow the error
     end
+
+    fclose(fid); % close the file
 
     % [Igrid, Jgrid] = meshgrid(1:k);
     % scoreMatrix = arrayfun(@(i, j) score(X, I(i, :), J(j, :)), Igrid, Jgrid);

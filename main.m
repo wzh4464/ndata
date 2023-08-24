@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Wednesday, 23rd August 2023 10:51:07 pm
+%Last Modified: Thursday, 24th August 2023 1:20:31 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -15,6 +15,7 @@
 %19-08-232023	HPC disp('S = ' + string(diag(S(1:20, 1:20))))
 %}
 
+dbstop if error;
 %% Load the matfile
 tic;
 mf = matfile('data/smallA.mat');
@@ -22,7 +23,9 @@ mf = matfile('data/smallA.mat');
 toc;
 % load first 10000 lines of smallA without loading the whole file to memory
 batch_size = 10000;
-A = mf.smallA(1:batch_size, :);
+% A = mf.smallA(1:batch_size, :);
+load('data/smallA.mat');
+A = smallA;
 toc;
 %% ignore columns with all zeros and build the column map
 col_map = (sum(A, 1) ~= 0);
