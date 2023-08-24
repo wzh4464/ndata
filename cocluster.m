@@ -60,13 +60,14 @@ function [row_cluster, col_cluster] = cocluster(X, scale, k)
     disp('begin busy');
     % open a file 'result/scoreMatrix.txt'
     try
-        feature('numcores')
+        % feature('numcores')
+        % 
+        % if isempty(gcp('nocreate'))
+        %     parpool(feature('numcores'));
+        % end
 
-        if isempty(gcp('nocreate'))
-            parpool(feature('numcores'));
-        end
-
-        parfor i = 1:k
+        % parfor i = 1:k
+        for i = 1:k
             % open file for current worker
             fid(i) = fopen(sprintf('result/scoreMatrix_%d_scale_%d.txt', i, scale), 'w');
 

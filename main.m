@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Thursday, 24th August 2023 3:43:38 pm
+%Last Modified: Thursday, 24th August 2023 10:06:10 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -32,7 +32,7 @@ col_map = (sum(A, 1) ~= 0);
 A = A(:, col_map);
 toc;
 tic;
-cocluster(A, batch_size*0.7, batch_size/100);
+cocluster(A, batch_size, batch_size/1000);
 toc;
 
 % see the difference
