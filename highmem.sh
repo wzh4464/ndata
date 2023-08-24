@@ -5,8 +5,8 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --mail-type=ALL          # Email user when job starts, ends and aborts
 #SBATCH --mail-user=zihanwu7-c@my.cityu.edu.hk       # Email user
-#SBATCH --output=result/highmem_cocluster_output.txt
-#SBATCH --error=result/highmem_cocluster_error.txt
+#SBATCH --output=result/highmem_cocluster_output$JOB_ID.txt
+#SBATCH --error=result/highmem_cocluster_error$JOB_ID.txt
 #SBATCH --job-name=highmem_cocluster
 
 
