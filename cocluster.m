@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Thursday, 24th August 2023 1:19:29 pm
+%Last Modified: Thursday, 24th August 2023 4:07:03 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -24,10 +24,7 @@ function [row_cluster, col_cluster] = cocluster(X, scale, k)
     [U, ~, V] = svds(X, scale);
     toc; fprintf('for svd\n');
 
-    % save U, S, V
-    % tic;
-    % save('result/svd.mat', 'U', 'S', 'V', '-v7.3');
-    % toc; fprintf('for save\n');
+    % save U, S, V % tic; % save('result/svd.mat', 'U', 'S', 'V', '-v7.3'); % toc; fprintf('for save\n');
 
     % do k-means on U and V
     % U = U(:, 1:scale);
@@ -40,7 +37,7 @@ function [row_cluster, col_cluster] = cocluster(X, scale, k)
     toc; fprintf('for col\n');
 
     % save row_idx, row_cluster, row_dist, row_sumd, col_idx, col_cluster, col_dist, col_sumd
-    save('result/kmeans.mat', 'row_idx', 'row_cluster', 'row_dist', 'row_sumd', 'col_idx', 'col_cluster', 'col_dist', 'col_sumd', '-v7.3');
+    save('result/kmeans_' + string(scale) + '.mat', 'row_idx', 'row_cluster', 'row_dist', 'row_sumd', 'col_idx', 'col_cluster', 'col_dist', 'col_sumd', '-v7.3');
     fprintf('for save kmeans result\n');
 
     % compute I,J for each cluster
@@ -63,37 +60,42 @@ function [row_cluster, col_cluster] = cocluster(X, scale, k)
     disp('begin busy');
     % open a file 'result/scoreMatrix.txt'
     try
-        fid = fopen('result/scoreMatrix.txt', 'w');
         feature('numcores')
-        parpool(feature('numcores'));
+
+        if isempty(gcp('nocreate'))
+            parpool(feature('numcores'));
+        end
+
         parfor i = 1:k
+            % open file for current worker
+            fid(i) = fopen(sprintf('result/scoreMatrix_%d_scale_%d.txt', i, scale), 'w');
+
             for j = 1:k
                 % compute score for each submatrix
+                tic;
                 scoreMatrix(i, j) = score(X, I(i, :), J(j, :));
-                fprintf(fid, '%d %d %f\n', i, j, scoreMatrix(i, j));
+                fprintf(fid(i), '%d %d %f\n', i, j, scoreMatrix(i, j));
+                toc;
+                fprintf('i = %d, j = %d, score = %f\n', i, j, scoreMatrix(i, j));
             end
+
+            fclose(fid(i)); % close file for current worker
+            fprintf('worker %d finished\n', i);
         end
-    % two kind of error:
-    % 1. file related error;
-    % 2. parallel related error;
+
     catch ME
-        fclose(fid); % close the file
         delete(gcp('nocreate')); % close the parallel pool
-        save('result/scoreMatrix.mat', 'scoreMatrix', '-v7.3');
-        save('result/function.mat');
+        save('result/scoreMatrix_' + string(scale) + '.mat', 'scoreMatrix', '-v7.3');
+        save('result/function_' + string(scale) + '.mat', '-v7.3');
         rethrow(ME); % rethrow the error
     end
-
-    fclose(fid); % close the file
 
     % [Igrid, Jgrid] = meshgrid(1:k);
     % scoreMatrix = arrayfun(@(i, j) score(X, I(i, :), J(j, :)), Igrid, Jgrid);
 
     % save scoreMatrix
-    save('result/scoreMatrix.mat', 'scoreMatrix', '-v7.3');
-    save('result/function.mat');
-
-
+    save('result/scoreMatrix_' + string(scale) + '.mat', 'scoreMatrix', '-v7.3');
+    save('result/function_' + string(scale) + '.mat');
 
     % initialize loss
     %! WIP

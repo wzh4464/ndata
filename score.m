@@ -3,7 +3,7 @@
 %Created Date: 2023-08-23 Wed
 %Author: Hance Ng
 %-----
-%Last Modified: Wednesday, 23rd August 2023 10:41:08 pm
+%Last Modified: Thursday, 24th August 2023 3:57:26 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -21,6 +21,7 @@ function result = score(X, I, J)
     % I = logical(I);
     % J = logical(J);
 
+    % tic;
     lenI = sum(I);
     lenJ = sum(J);
 
@@ -28,6 +29,8 @@ function result = score(X, I, J)
     S2 = abs(corrcoef(X(I, J)') - eye(lenI));
 
     result = min([scoreHelper(lenJ, S1), scoreHelper(lenI, S2)]);
+    % toc;
+    % fprintf('score: %f\n', result);
 end
 
 function s = scoreHelper(length, C)
