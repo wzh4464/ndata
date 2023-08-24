@@ -3,7 +3,7 @@
 %Created Date: Saturday August 19th 2023
 %Author: Hance Ng
 %-----
-%Last Modified: Thursday, 24th August 2023 4:07:03 pm
+%Last Modified: Thursday, 24th August 2023 4:35:47 pm
 %Modified By: the developer formerly known as Hance Ng at <wzh4464@gmail.com>
 %-----
 %HISTORY:
@@ -74,8 +74,8 @@ function [row_cluster, col_cluster] = cocluster(X, scale, k)
                 % compute score for each submatrix
                 tic;
                 scoreMatrix(i, j) = score(X, I(i, :), J(j, :));
-                fprintf(fid(i), '%d %d %f\n', i, j, scoreMatrix(i, j));
-                toc;
+                fprintf(fid(i), '%d %d %f %f\n', i, j, scoreMatrix(i, j), toc);
+                % toc;
                 fprintf('i = %d, j = %d, score = %f\n', i, j, scoreMatrix(i, j));
             end
 
